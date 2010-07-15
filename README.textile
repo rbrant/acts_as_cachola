@@ -1,0 +1,49 @@
+h1. ActsAsCachola
+
+And you thought all the clever caching names were taken.
+
+h2. What is is
+
+ActsAsCachola lets you cache any class method by simply prepending 'chachola_' to the method name. Here's how it works:
+
+<pre>
+class Internet < ActiveRecord::Base
+  acts_as_cachola
+  
+  def get_something_that_takes_a_long_time
+    1.upto(1_000_000).inject([]){|all, x| all << x }
+  end
+end
+</pre>
+
+Now when you call, 'cachola_get_something_that_takes_a_long_time' the return value of 'get_something_that_takes_a_long_time'
+will be cached automatically.
+
+The cached method is expired automatically when the class in which the plugin has been included
+is saved or destroyed. It's restored to the cache the next time it's called.
+
+Now, what if your Internet class method 'get_something_that_takes_a_long_time' depends on other objects getting
+saved or destroyed. I thought of that to. It's the other thing I wanted to make easier. Rather than setting up
+observers or sweepers, you can add the following to the other model:
+
+<pre>
+class WhereAmI < ActiveRecord::Base
+  acts_as_cachola_notifier => [:internet]
+end
+</pre>
+
+Now when your WhereAmI model is ether saved or destroyed, the cached methods in the Internet model will
+be deleted. 
+
+h2. Where is this going from here?
+
+Not sure. It does what I need it to do right now. It's something I've found myself doing on two different projects
+that I thought would just make my life easier.
+
+
+h2. Project Info
+
+Formtastic is hosted on Github: "http://github.com/rbrant/acts_as_cachola":http://github.com/rbrant/acts_as_cachola, where your contributions, forkings, comments and feedback are greatly welcomed.
+
+
+Copyright (c) 2010 Richard T. Brant, released under the MIT license
