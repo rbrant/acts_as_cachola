@@ -37,7 +37,7 @@ Calling Internet.cachola_get_numbers(100) and Internet.cachola_get_numbers(500) 
 
 The cached method is then expired automatically when the class in which the plugin has been included is saved or destroyed. It's restored to the cache the next time it's called.
 
-Now, what if your Internet class method 'get_something_that_takes_a_long_time' depends on other objects getting saved or destroyed? That's the other thing I wanted to make easier. Rather than setting up observers or sweepers, you can add the following to the other model:
+Now, what if your Internet class method 'get_a_million_numbers' depends on other objects getting saved or destroyed? That's the other thing I wanted to make easier. Rather than setting up observers or sweepers, you can add the following to the other model:
 
 <pre>
 class WhereAmI < ActiveRecord::Base
