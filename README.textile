@@ -7,25 +7,37 @@ h2. What is is
 ActsAsCachola is a plugin that lets you cache any class method by simply prepending 'chachola_' to the method name
 when calling it. Here's how it works:
 
+Given the following model:
+
 <pre>
 class Internet < ActiveRecord::Base
   acts_as_cachola
   
-  def get_something_that_takes_a_long_time
+  def self.get_a_million_numbers
     1.upto(1_000_000).inject([]){ |numbers, x| numbers << x }
   end
 end
 </pre>
 
-Now you can call the method, 'cachola_get_something_that_takes_a_long_time,' and the return 
-value of 'get_something_that_takes_a_long_time' will be cached automatically.
+Now you can call the method, 'cachola_get_a_million_numbers,' and the return value of 'get_a_million_numbers' will be cached automatically.
 
-The cached method is then expired automatically when the class in which the plugin has been included
-is saved or destroyed. It's restored to the cache the next time it's called.
+Note that if the method accepts arguments, each unique call will have its own key in the cache. For example:
 
-Now, what if your Internet class method 'get_something_that_takes_a_long_time' depends on other objects getting
-saved or destroyed. I thought of that too. It's the other thing I wanted to make easier. Rather than setting up
-observers or sweepers, you can add the following to the other model:
+<pre>
+class Internet < ActiveRecord::Base
+  acts_as_cachola
+  
+  def self.get_numbers(to_number)
+    1.upto(to_number).inject([]){ |numbers, x| numbers << x }
+  end
+end
+</pre>
+
+Calling Internet.cachola_get_numbers(100) and Internet.cachola_get_numbers(500) will result in two keys (with different values) stored in the cache.
+
+The cached method is then expired automatically when the class in which the plugin has been included is saved or destroyed. It's restored to the cache the next time it's called.
+
+Now, what if your Internet class method 'get_something_that_takes_a_long_time' depends on other objects getting saved or destroyed? That's the other thing I wanted to make easier. Rather than setting up observers or sweepers, you can add the following to the other model:
 
 <pre>
 class WhereAmI < ActiveRecord::Base
@@ -33,8 +45,7 @@ class WhereAmI < ActiveRecord::Base
 end
 </pre>
 
-Now when your WhereAmI model is ether saved or destroyed, the cached methods in the Internet model will
-be deleted. 
+Now when your WhereAmI model is ether saved or destroyed, the cached methods in the Internet model will be deleted. 
 
 h2. Installation
 
@@ -42,15 +53,10 @@ script/plugin install git://github.com/rbrant/acts_as_cachola.git
 
 h2. Where is this going from here?
 
-Not sure. It does what I need it to do right now. It's something I've found myself doing on two different projects
-that I thought would just make my life easier.
-
+Not sure. It does what I need it to do right now. It's something I've found myself doing on two different projects that I thought would just make my life easier.
 
 h2. Project Info
 
-ActsAsCachola is hosted on Github: "http://github.com/rbrant/acts_as_cachola":http://github.com/rbrant/acts_as_cachola, 
-where your contributions, forkings, comments and feedback are greatly appreciated. Please do add tests if you want me to 
-pull in any changes.
-
+ActsAsCachola is hosted on Github: "http://github.com/rbrant/acts_as_cachola":http://github.com/rbrant/acts_as_cachola, where your contributions, forkings, comments and feedback are greatly appreciated. Please do add tests if you want me to pull in any changes.
 
 Copyright (c) 2010 Richard T. Brant, released under the MIT license

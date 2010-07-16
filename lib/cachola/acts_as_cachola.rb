@@ -15,7 +15,6 @@ module Cachola
     end
     
     def acts_as_cachola_notifier(options={})
-      
       send :include, InstanceMethods
       cattr_accessor :models
       self.models = options[:models]
@@ -36,14 +35,14 @@ module Cachola
       
       if match = /^cachola_.*/.match(method_id.to_s)
      
-        method_called = match[0]
-        actual_method = method_called.gsub(/^cachola_/,'')
+        actual_method = match[0].gsub(/^cachola_/,'')
         cachola_key   = "#{self.to_s}.#{actual_method}"
         cachola_key   += ".#{arguments.to_s}" unless arguments.empty?
         
         cachola_keys = Rails.cache.read(cachola_keys_name)
         
-        # store the name of the class method that was stored
+        # store the name of the class method that was stored if
+        # it wasn't called yet
         if cachola_keys.nil?
           Rails.cache.write(cachola_keys_name, [cachola_key])
         else
@@ -67,9 +66,7 @@ module Cachola
 
   module InstanceMethods
     def reset_cachola
-      # if called from the class in which acts_as_cachola is being called
-      # the class we are watching..is the one it's in. It can also be called
-      # from other classes via 'acts_as_cachola_notifier :topic, :other_class'
+      # Can be called from either acts_as_cachola or acts_as_cachola_notifier.
       models = self.class.respond_to?(:models) ? self.models : [self.class]
 
       # class methods to clear
