@@ -4,26 +4,27 @@ And you thought all the clever caching names were taken.
 
 h2. What is is
 
-ActsAsCachola lets you cache any class method by simply prepending 'chachola_' to the method name. Here's how it works:
+ActsAsCachola is a plugin that lets you cache any class method by simply prepending 'chachola_' to the method name
+when calling it. Here's how it works:
 
 <pre>
 class Internet < ActiveRecord::Base
   acts_as_cachola
   
   def get_something_that_takes_a_long_time
-    1.upto(1_000_000).inject([]){|all, x| all << x }
+    1.upto(1_000_000).inject([]){ |numbers, x| numbers << x }
   end
 end
 </pre>
 
-Now when you call, 'cachola_get_something_that_takes_a_long_time' the return value of 'get_something_that_takes_a_long_time'
-will be cached automatically.
+Now you can call the method, 'cachola_get_something_that_takes_a_long_time,' and the return 
+value of 'get_something_that_takes_a_long_time' will be cached automatically.
 
-The cached method is expired automatically when the class in which the plugin has been included
+The cached method is then expired automatically when the class in which the plugin has been included
 is saved or destroyed. It's restored to the cache the next time it's called.
 
 Now, what if your Internet class method 'get_something_that_takes_a_long_time' depends on other objects getting
-saved or destroyed. I thought of that to. It's the other thing I wanted to make easier. Rather than setting up
+saved or destroyed. I thought of that too. It's the other thing I wanted to make easier. Rather than setting up
 observers or sweepers, you can add the following to the other model:
 
 <pre>
@@ -35,6 +36,10 @@ end
 Now when your WhereAmI model is ether saved or destroyed, the cached methods in the Internet model will
 be deleted. 
 
+h2. Installation
+
+script/plugin install git://github.com/rbrant/acts_as_cachola.git
+
 h2. Where is this going from here?
 
 Not sure. It does what I need it to do right now. It's something I've found myself doing on two different projects
@@ -43,7 +48,9 @@ that I thought would just make my life easier.
 
 h2. Project Info
 
-Formtastic is hosted on Github: "http://github.com/rbrant/acts_as_cachola":http://github.com/rbrant/acts_as_cachola, where your contributions, forkings, comments and feedback are greatly welcomed.
+ActsAsCachola is hosted on Github: "http://github.com/rbrant/acts_as_cachola":http://github.com/rbrant/acts_as_cachola, 
+where your contributions, forkings, comments and feedback are greatly appreciated. Please do add tests if you want me to 
+pull in any changes.
 
 
 Copyright (c) 2010 Richard T. Brant, released under the MIT license

@@ -14,7 +14,6 @@ module Cachola
       CLASS_METHODS
     end
     
-    
     def acts_as_cachola_notifier(options={})
       
       send :include, InstanceMethods
