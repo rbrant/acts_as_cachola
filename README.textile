@@ -4,7 +4,7 @@ And you thought all the clever caching names were taken.
 
 h2. What is it
 
-ActsAsCachola is a plugin that lets you cache any class method by simply prepending 'chachola_' to the method name
+ActsAsCachola is a plugin that lets you cache any class method by simply prepending 'cachola_' to the method name
 when calling it. Here's how it works:
 
 Given the following model:
